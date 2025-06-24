@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController";
+import { validate } from "../middlewares/validate";
+import { registerUserSchema } from "../validations/userSchema";
 
 const router = Router();
 const userController = new UserController();
@@ -11,7 +13,7 @@ router.post("/login", async (req, res, next) => {
 		next(error);
 	}
 });
-router.post("/register", async (req, res, next) => {
+router.post("/register", validate(registerUserSchema), async (req, res, next) => {
 	try {
 		await userController.register(req, res);
 	} catch (error) {
