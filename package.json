@@ -1,7 +1,7 @@
 {
   "name": "api-colaboradores",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -17,7 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.2",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.25"
@@ -29,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.3",
     "nodemon": "^3.1.10",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "wait-for-it": "^1.0.0"
   }
 }
