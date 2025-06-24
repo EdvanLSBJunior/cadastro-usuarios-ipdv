@@ -15,7 +15,7 @@ export class User {
   id!: number;
 
   @Column()
-  nome!: string;
+  name!: string;
 
   @Column({ unique: true })
   email!: string;
@@ -24,7 +24,7 @@ export class User {
   password!: string;
 
   @Column({ default: true })
-  ativo!: boolean;
+  active!: boolean;
 
   @ManyToOne(() => Role, (role) => role.usuarios, { eager: true })
   @JoinColumn({ name: "role_id" })
