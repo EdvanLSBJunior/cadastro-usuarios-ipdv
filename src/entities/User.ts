@@ -21,7 +21,7 @@ export class User {
   email!: string;
 
   @Column()
-  senha!: string;
+  password!: string;
 
   @Column({ default: true })
   ativo!: boolean;

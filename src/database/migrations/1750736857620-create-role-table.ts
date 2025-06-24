@@ -7,7 +7,7 @@ export class CreateRoleTable implements MigrationInterface {
         name: "roles",
         columns: [
           { name: "id", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
-          { name: "nome", type: "varchar", isNullable: false },
+          { name: "name", type: "varchar", isNullable: false },
           { name: "created_at", type: "timestamp", default: "now()" },
           { name: "updated_at", type: "timestamp", default: "now()" },
         ],
