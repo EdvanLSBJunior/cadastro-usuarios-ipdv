@@ -1,38 +1,44 @@
-version: "3.8"
+version: '3.8'
 
 services:
   db:
-    image: postgres:16
-    container_name: postgres_colaboradores
+    image: postgres
+    container_name: db
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: colaboradores_ipdv
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  api:
-    build: .
-    container_name: api_colaboradores
-    restart: always
-    ports:
-      - "3000:3000"
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     depends_on:
       - db
-    volumes:
-      - .:/usr/src/app
-    command: npm run dev
+    ports:
+      - "3000:3000"
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=123456
-      - DB_NAME=colaboradores_ipdv
-      - JWT_SECRET=secret_key
-      - JWT_EXPIRES_IN=60m
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: colaboradores_ipdv
+    command: sh -c "npm run build && node dist/scripts/migration-run.js && npm start"
+
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./frontend/Dockerfile
+  #   ports:
+  #     - "5173:5173"
+  #   depends_on:
+  #     - backend
 
 volumes:
   postgres_data:

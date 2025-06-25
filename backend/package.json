@@ -6,7 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
-    "build": "tsc"
+    "typeorm:migrate": "ts-node src/scripts/migration-run.ts",
+    "build": "tsc",
+    "start": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
