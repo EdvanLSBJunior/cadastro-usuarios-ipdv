@@ -1,70 +1,142 @@
 <template>
   <v-container>
-    <v-row class="justify-space-between align-center mb-4">
-      <v-col cols="auto">
-        <v-icon size="36" color="primary">mdi-account-group</v-icon>
-        <span class="text-h5 font-weight-medium ml-2">Colaboradores</span>
-      </v-col>
-    </v-row>
-
-    <v-card class="elevation-2">
+    <v-card class="pa-4">
+      <v-card-title class="d-flex justify-space-between align-center">
+        <span class="text-h6">Colaboradores</span>
+        <v-btn color="primary" class="text-white" @click="isCreateDialogOpen = true">
+            + Novo Colaborador
+        </v-btn>
+        </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="collaborators"
-        :items-per-page="5"
+        :items="users"
+        :loading="loading"
+        loading-text="Carregando colaboradores..."
         class="elevation-1"
-        no-data-text="Nenhum colaborador encontrado"
       >
-        <template #item.status="{ item }">
-          <v-chip :color="item.status === 'Ativo' ? 'green' : 'red'" dark>
-            {{ item.status }}
+        <template #item.active="{ item }">
+          <v-chip :color="item.active ? 'green' : 'red'" dark>
+            {{ item.active ? 'Ativo' : 'Inativo' }}
           </v-chip>
         </template>
 
         <template #item.actions="{ item }">
-          <v-icon class="mr-2" small @click="edit(item)">mdi-pencil</v-icon>
-          <v-icon small color="red" @click="remove(item)">mdi-delete</v-icon>
+          <v-btn size="35" icon @click="editUser(item)" class="me-2">
+            <v-icon size="18">mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn size="35" icon color="red" @click="openDeleteDialog(item)">
+            <v-icon size="18">mdi-delete</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
 
-    <v-btn
-      icon
-      color="primary"
-      class="ma-4"
-      style="position: fixed; bottom: 24px; right: 24px"
-      @click="create"
-    >
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    <!-- Diálogo de confirmação -->
+    <v-dialog v-model="dialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-h6">Confirmar exclusão</v-card-title>
+        <v-card-text>
+          Tem certeza que deseja excluir o usuário
+          <strong>{{ selectedUser?.name }}</strong>?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn text @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="red" text @click="confirmDelete">Excluir</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <EditUserModal
+      :user="selectedUser"
+      v-model:isOpen="isEditDialogOpen"
+      @updated="fetchUsers"
+    />
   </v-container>
+
+  <CreateUserModal
+    v-model:isOpen="isCreateDialogOpen"
+    @created="fetchUsers"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import EditUserModal from '@/components/EditUserModal.vue'
+import CreateUserModal from '@/components/CreateUserModal.vue'
+
+interface User {
+  id: number
+  name: string
+  email: string
+  role: { name: string }
+  active: boolean
+}
+
+const users = ref<User[]>([])
+const loading = ref(true)
+
+const dialog = ref(false)
+const selectedUser = ref<User | null>(null)
+
+const isEditDialogOpen = ref(false)
+
+const isCreateDialogOpen = ref(false)
 
 const headers = [
-  { text: 'Nome', value: 'name' },
-  { text: 'E-mail', value: 'email' },
-  { text: 'Cargo', value: 'role' },
-  { text: 'Status', value: 'status' },
-  { text: 'Ações', value: 'actions', sortable: false },
+  { title: 'Nome', key: 'name' },
+  { title: 'Email', key: 'email' },
+  { title: 'Cargo', key: 'role.name' },
+  { title: 'Status', key: 'active' },
+  { title: 'Ações', key: 'actions', sortable: false }
 ]
 
-const collaborators = ref([
-  { id: 1, name: 'João Silva', email: 'joao@email.com', role: 'Desenvolvedor', status: 'Ativo' },
-  { id: 2, name: 'Maria Souza', email: 'maria@email.com', role: 'Designer', status: 'Inativo' },
-])
-
-function create() {
-  console.log('Criar novo colaborador')
+const fetchUsers = async () => {
+  loading.value = true
+  try {
+    const response = await axios.get('http://localhost:3000/api/admin/users/', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    users.value = response.data
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error)
+  } finally {
+    loading.value = false
+  }
 }
 
-function edit(item: any) {
-  console.log('Editar', item)
+const editUser = (user: User) => {
+  selectedUser.value = user
+  isEditDialogOpen.value = true
 }
 
-function remove(item: any) {
-  console.log('Remover', item)
+const openDeleteDialog = (user: User) => {
+  selectedUser.value = user
+  dialog.value = true
 }
+
+const confirmDelete = async () => {
+  if (!selectedUser.value) return
+
+  try {
+    await axios.delete(`http://localhost:3000/api/admin/users/${selectedUser.value.id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    fetchUsers()
+  } catch (error) {
+    console.error('Erro ao deletar usuário:', error)
+  } finally {
+    dialog.value = false
+    selectedUser.value = null
+  }
+}
+
+onMounted(() => {
+  fetchUsers()
+})
 </script>

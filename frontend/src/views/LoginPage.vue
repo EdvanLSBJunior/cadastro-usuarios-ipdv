@@ -34,36 +34,57 @@
       </v-form>
     </v-card>
   </v-container>
+  <v-dialog v-model="dialog" max-width="400">
+     <v-card>
+      <v-card-title class="text-h6">Erro ao logar</v-card-title>
+      <v-card-text>{{ dialogMessage }}</v-card-text>
+      <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="primary" @click="dialog = false">OK</v-btn>
+      </v-card-actions>
+     </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import api from '@/services/api'
+import axios from 'axios'
+import EditUserModal from '@/components/EditUserModal.vue'
+
 
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const router = useRouter()
+const dialog = ref(false)
+const dialogMessage = ref('')
 
 const rules = {
-  required: (v: string) => !!v || 'Campo obrigatório',
-  email: (v: string) => /.+@.+\..+/.test(v) || 'E-mail inválido',
+  required: (value: string) => !!value || 'Campo obrigatório',
+  email: (value: string) => {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return pattern.test(value) || 'E-mail inválido'
+  }
 }
 
 const handleLogin = async () => {
   loading.value = true
   try {
-    const response = await api.post('/login', {
+    const response = await axios.post('http://localhost:3000/api/login', {
       email: email.value,
       password: password.value,
     })
 
-    const token = response.data.token
+    const { token, user } = response.data
     localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(user))
+
     router.push('/colaboradores')
   } catch (error) {
-    alert('Falha no login. Verifique suas credenciais.')
+     dialogMessage.value = 'E-mail ou senha inválidos. Verifique os dados e tente novamente.'
+     dialog.value = true
+
   } finally {
     loading.value = false
   }
