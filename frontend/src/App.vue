@@ -6,5 +6,4 @@
 </script>
 
 <style scoped>
-/* Remover estilos padrão */
 </style>
