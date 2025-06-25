@@ -2,6 +2,16 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
+dotenv.config();
+
+interface TokenPayload {
+  id: number;
+  email: string;
+  roleId: number;
+  iat: number;
+  exp: number;
+}
+
 declare global {
   namespace Express {
     interface Request {
@@ -14,21 +24,12 @@ declare global {
   }
 }
 
-dotenv.config();
-
-interface TokenPayload {
-  id: number;
-  email: string;
-  roleId: number;
-  iat: number;
-  exp: number;
-}
-
 export function ensureAuthenticated(req: Request, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return next(new Error("Token não fornecido"));
+    res.status(401).json({ error: "Token não fornecido" });
+    return;
   }
 
   const [, token] = authHeader.split(" ");
@@ -44,6 +45,6 @@ export function ensureAuthenticated(req: Request, res: Response, next: NextFunct
 
     next();
   } catch (err) {
-    next(new Error("Token inválido ou expirado"));
+    res.status(401).json({ error: "Token inválido ou expirado" });
   }
 }

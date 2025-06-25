@@ -1,17 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: {
-      roleId?: number;
-      [key: string]: any;
-    };
+export function isAdmin(req: Request, res: Response, next: NextFunction): void {
+  if (!req.user || req.user.roleId !== 1) {
+    res.status(403).json({ error: "Acesso negado. Admins apenas." });
+    return;
   }
-}
 
-export function isAdmin(req: Request, res: Response, next: NextFunction) {
-  if (req.user?.roleId !== 1) {
-    return res.status(403).json({ error: "Acesso negado" });
-  }
   next();
 }

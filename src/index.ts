@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { AppDataSource } from "./config/data-source";
 import userRoutes from "./routes/user.routes";
+import userAdminRoutes from "./routes/user-admin.routes";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ AppDataSource.initialize().then(() => {
   app.use(express.json());
 
   app.use("/api", userRoutes);
+  app.use("/api/admin/users", userAdminRoutes);
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
