@@ -18,15 +18,15 @@ export class UserController {
   }
 
   async register(req: Request, res: Response): Promise<Response> {
-    const { name, email, password, roleId } = req.body;
-
-    try {
-      const user = await this.userService.createUser(name, email, password, roleId);
-      return res.status(201).json(user);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
-    }
+  try {
+    const newUser = await this.userService.createUser(req.body);
+    const { password: _, ...userWithoutPassword } = newUser;
+    return res.status(201).json(userWithoutPassword);
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message });
   }
+}
+
 
   async getAllUsers(_req: Request, res: Response): Promise<Response> {
     const users = await this.userService.listAll();

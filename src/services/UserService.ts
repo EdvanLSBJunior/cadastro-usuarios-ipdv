@@ -7,27 +7,33 @@ export class UserService {
   private userRepo = AppDataSource.getRepository(User);
   private roleRepo = AppDataSource.getRepository(Role);
 
-  async createUser(name: string, email: string, password: string, roleId: number) {
-    const userExists = await this.userRepo.findOne({ where: { email } });
-    if (userExists) throw new Error("User already exists.");
+  async createUser(data: Partial<User>): Promise<User> {
+  const userRepo = AppDataSource.getRepository(User);
+  const roleRepo = AppDataSource.getRepository(Role);
 
-    const role = await this.roleRepo.findOne({ where: { id: roleId } });
-    if (!role) throw new Error("Invalid role.");
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = this.userRepo.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      active: true,
-    });
-
-    const savedUser = await this.userRepo.save(user);
-    const { password: _, ...userWithoutPassword } = savedUser;
-    return userWithoutPassword;
+  const existingUser = await userRepo.findOne({ where: { email: data.email } });
+  if (existingUser) {
+    throw new Error("Email already in use.");
   }
+
+  const role = await roleRepo.findOne({ where: { id: data.role?.id } });
+  if (!role) {
+    throw new Error("Invalid role.");
+  }
+
+  const hashedPassword = await bcrypt.hash(data.password!, 10);
+
+  const user = userRepo.create({
+    name: data.name,
+    email: data.email,
+    password: hashedPassword,
+    active: data.active ?? true,
+    role,
+  });
+
+  return await userRepo.save(user);
+}
+
 
   async listAll() {
     return this.userRepo.find({ relations: ["role"] });
