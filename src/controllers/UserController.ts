@@ -53,4 +53,54 @@ export class UserController {
       return res.status(500).json({ error: "Internal server error." });
     }
   }
+
+  async getAllUsers(_req: Request, res: Response): Promise<Response> {
+    const users = await AppDataSource.getRepository(User).find({ relations: ["role"] });
+    return res.json(users);
+  }
+
+  async getUserById(req: Request, res: Response): Promise<Response> {
+    const user = await AppDataSource.getRepository(User).findOne({
+      where: { id: Number(req.params.id) },
+      relations: ["role"],
+    });
+
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+    return res.json(user);
+  }
+
+  async update(req: Request, res: Response): Promise<Response> {
+    const { name, email, roleId, active } = req.body;
+    const userRepo = AppDataSource.getRepository(User);
+
+    const user = await userRepo.findOne({ where: { id: Number(req.params.id) } });
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+
+    user.name = name ?? user.name;
+    user.email = email ?? user.email;
+
+    if (roleId !== undefined && roleId !== user.role.id) {
+      const roleRepo = AppDataSource.getRepository(Role);
+      const newRole = await roleRepo.findOne({ where: { id: roleId } });
+      if (!newRole) {
+        return res.status(400).json({ error: "Invalid role." });
+      }
+      user.role = newRole;
+    }
+
+    user.active = active ?? user.active;
+
+    await userRepo.save(user);
+    return res.json(user);
+  }
+
+  async delete(req: Request, res: Response): Promise<Response> {
+    const userRepo = AppDataSource.getRepository(User);
+
+    const user = await userRepo.findOne({ where: { id: Number(req.params.id) } });
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+
+    await userRepo.remove(user);
+    return res.status(204).send();
+  }
 }
