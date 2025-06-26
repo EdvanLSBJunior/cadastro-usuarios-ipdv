@@ -22,10 +22,6 @@
             label="Cargo"
             :rules="[rules.required]"
           />
-          <v-switch
-            v-model="formData.active"
-            label="Usuário Ativo"
-          />
         </v-form>
       </v-card-text>
       <v-card-actions>
