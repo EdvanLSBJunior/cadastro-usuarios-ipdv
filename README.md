@@ -48,6 +48,10 @@ Isso irá:
 - Rodar o backend em http://localhost:3000
 - Disponibilizar o frontend em http://localhost:5173
 
+## Realizar Login com as credenciais:
+- usuario: admin@ipdv.com
+- password: admin123
+
 ---
 
 ## 📂 Estrutura do Projeto
