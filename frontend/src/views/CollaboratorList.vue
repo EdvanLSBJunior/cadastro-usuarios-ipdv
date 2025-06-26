@@ -31,7 +31,9 @@
             <v-icon size="18">mdi-pencil</v-icon>
           </v-btn>
           <v-btn size="35" icon color="orange" @click="openDeactivateDialog(item)">
-            <v-icon size="18">mdi-account-off</v-icon>
+            <v-icon size="18">
+              {{ item.active ? 'mdi-account-off' : 'mdi-account-check' }}
+            </v-icon>
           </v-btn>
         </template>
       </v-data-table>
@@ -42,13 +44,20 @@
         <v-card>
             <v-card-title class="text-h6">Confirmar desativação</v-card-title>
             <v-card-text>
-                Tem certeza que deseja desativar o usuário
-                <strong>{{ selectedUser?.name }}</strong>?
+              Tem certeza que deseja
+              {{ selectedUser?.active ? 'desativar' : 'ativar' }}
+              o usuário <strong>{{ selectedUser?.name }}</strong>?
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <v-btn text @click="dialog = false">Cancelar</v-btn>
-                <v-btn color="orange" text @click="confirmDeactivate">Desativar</v-btn>
+                <v-btn
+                  :color="selectedUser?.active ? 'orange' : 'green'"
+                  text
+                  @click="confirmToggleActive"
+                >
+                  {{ selectedUser?.active ? 'Desativar' : 'Ativar' }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -125,21 +134,25 @@ const openDeactivateDialog = (user: User) => {
   dialog.value = true
 }
 
-const confirmDeactivate = async () => {
+const confirmToggleActive = async () => {
   if (!selectedUser.value) return
 
   try {
-    await axios.put(`http://localhost:3000/api/admin/users/${selectedUser.value.id}`, {
-      ...selectedUser.value,
-      active: false
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+    await axios.put(
+      `http://localhost:3000/api/admin/users/${selectedUser.value.id}`,
+      {
+        ...selectedUser.value,
+        active: !selectedUser.value.active
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       }
-    })
+    )
     fetchUsers()
   } catch (error) {
-    console.error('Erro ao desativar usuário:', error)
+    console.error('Erro ao alterar status do usuário:', error)
   } finally {
     dialog.value = false
     selectedUser.value = null
