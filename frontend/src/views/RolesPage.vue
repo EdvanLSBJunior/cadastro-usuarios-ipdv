@@ -27,7 +27,6 @@
       @updated="fetchRoles"
     />
 
-    <!-- Confirmação de exclusão -->
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
         <v-card-title class="text-h6">Confirmar exclusão</v-card-title>
@@ -45,7 +44,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import RoleModal from '@/components/RoleModal.vue'
+import RoleModal from '@/components/roleModal/RoleModal.vue'
 
 interface Role {
   id: number

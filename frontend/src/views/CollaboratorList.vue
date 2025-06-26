@@ -25,30 +25,36 @@
         </template>
 
         <template #item.actions="{ item }">
-          <v-btn size="35" icon @click="editUser(item)" class="me-2">
+          <v-btn
+           v-if="item.active"
+           size="35"
+           icon 
+           @click="editUser(item)" 
+           class="me-2"
+           >
             <v-icon size="18">mdi-pencil</v-icon>
           </v-btn>
-          <v-btn size="35" icon color="red" @click="openDeleteDialog(item)">
-            <v-icon size="18">mdi-delete</v-icon>
+          <v-btn size="35" icon color="orange" @click="openDeactivateDialog(item)">
+            <v-icon size="18">mdi-account-off</v-icon>
           </v-btn>
         </template>
       </v-data-table>
     </v-card>
 
-    <!-- Diálogo de confirmação -->
+    <!-- Diálogo de desativação -->
     <v-dialog v-model="dialog" max-width="400">
-      <v-card>
-        <v-card-title class="text-h6">Confirmar exclusão</v-card-title>
-        <v-card-text>
-          Tem certeza que deseja excluir o usuário
-          <strong>{{ selectedUser?.name }}</strong>?
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="red" text @click="confirmDelete">Excluir</v-btn>
-        </v-card-actions>
-      </v-card>
+        <v-card>
+            <v-card-title class="text-h6">Confirmar desativação</v-card-title>
+            <v-card-text>
+                Tem certeza que deseja desativar o usuário
+                <strong>{{ selectedUser?.name }}</strong>?
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="dialog = false">Cancelar</v-btn>
+                <v-btn color="orange" text @click="confirmDeactivate">Desativar</v-btn>
+            </v-card-actions>
+        </v-card>
     </v-dialog>
 
     <EditUserModal
@@ -118,23 +124,26 @@ const editUser = (user: User) => {
   isEditDialogOpen.value = true
 }
 
-const openDeleteDialog = (user: User) => {
+const openDeactivateDialog = (user: User) => {
   selectedUser.value = user
   dialog.value = true
 }
 
-const confirmDelete = async () => {
+const confirmDeactivate = async () => {
   if (!selectedUser.value) return
 
   try {
-    await axios.delete(`http://localhost:3000/api/admin/users/${selectedUser.value.id}`, {
+    await axios.put(`http://localhost:3000/api/admin/users/${selectedUser.value.id}`, {
+      ...selectedUser.value,
+      active: false
+    }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
     fetchUsers()
   } catch (error) {
-    console.error('Erro ao deletar usuário:', error)
+    console.error('Erro ao desativar usuário:', error)
   } finally {
     dialog.value = false
     selectedUser.value = null
