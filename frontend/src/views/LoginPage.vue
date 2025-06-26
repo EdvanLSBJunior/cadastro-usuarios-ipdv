@@ -50,7 +50,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import EditUserModal from '@/components/EditUserModal.vue'
+import EditUserModal from '@/components/userModal/EditUserModal.vue'
 
 
 const email = ref('')

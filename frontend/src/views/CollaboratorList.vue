@@ -63,8 +63,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import EditUserModal from '@/components/EditUserModal.vue'
-import CreateUserModal from '@/components/CreateUserModal.vue'
+import EditUserModal from '@/components/userModal/EditUserModal.vue'
+import CreateUserModal from '@/components/userModal/CreateUserModal.vue'
 
 interface User {
   id: number
