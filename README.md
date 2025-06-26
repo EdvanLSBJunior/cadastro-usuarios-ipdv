@@ -54,30 +54,6 @@ Isso irá:
 
 ---
 
-## 📂 Estrutura do Projeto
-  
-```
-.
-├── backend
-│   ├── src
-│   │   ├── controllers
-│   │   ├── services
-│   │   ├── middlewares
-│   │   ├── routes
-│   │   └── database (migrations, entities)
-│   └── Dockerfile
-├── frontend
-│   ├── src
-│   │   ├── views
-│   │   ├── components
-│   │   └── userModal
-│   └── Dockerfile
-├── docker-compose.yml
-└── README.md
-```
-
----
-
 ## 📸 Imagens da Aplicação
 
 ### 🔐 Tela de Login
