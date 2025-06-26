@@ -77,3 +77,37 @@ Isso irá:
 ## 📸 Imagens da Aplicação
 
 ### 🔐 Tela de Login
+"INSERIR AQUI A IMAGEM"
+
+### 👥 Listagem de Colaboradores
+"INSERIR AQUI A IMAGEM"
+
+### 🧑‍💼 Gerenciamento de Cargos
+"INSERIR AQUI A IMAGEM"
+
+## ✅ Funcionalidades Implementadas
+
+- Login de usuários com proteção por token
+- Tela protegida para listar colaboradores
+- Modal para criação e edição de colaboradores
+- Desativação de colaboradores (sem exclusão permanente)
+- Tela para listagem e edição de cargos
+- Barra de navegação entre seções
+- Integração completa via Docker Compose
+
+---
+
+## 📌 Considerações Finais
+
+Este projeto foi desenvolvido com foco em boas práticas de arquitetura, separação de responsabilidades e experiência do usuário. A stack foi definida de acordo com o solicitado:
+
+✔️ Node.js + Express  
+✔️ PostgreSQL  
+✔️ Vue.js + Vuetify  
+✔️ Docker para orquestração dos serviços
+
+---
+
+## ✍️ Autor
+
+Desenvolvido por **Edvan Junior** para o processo seletivo da **IPDV**.
