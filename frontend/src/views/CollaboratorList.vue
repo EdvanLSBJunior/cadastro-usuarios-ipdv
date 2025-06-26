@@ -1,16 +1,12 @@
 <template>
-  <v-container>
+  <v-container class="mt-16">
     <v-card class="pa-4">
       <v-card-title class="d-flex justify-space-between align-center">
         <span class="text-h6">Colaboradores</span>
         <v-btn color="primary" class="text-white" @click="isCreateDialogOpen = true">
             + Novo Colaborador
         </v-btn>
-        <v-btn color="error" @click="logout" size="small">
-            <v-icon start>mdi-logout</v-icon>
-                Sair
-        </v-btn>
-        </v-card-title>
+      </v-card-title>
       <v-data-table
         :headers="headers"
         :items="users"
