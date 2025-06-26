@@ -31,14 +31,14 @@ services:
       DB_NAME: colaboradores_ipdv
     command: sh -c "npm run build && node dist/scripts/migration-run.js && npm start"
 
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: ./frontend/Dockerfile
-  #   ports:
-  #     - "5173:5173"
-  #   depends_on:
-  #     - backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
