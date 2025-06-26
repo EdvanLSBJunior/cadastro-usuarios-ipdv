@@ -6,6 +6,10 @@
         <v-btn color="primary" class="text-white" @click="isCreateDialogOpen = true">
             + Novo Colaborador
         </v-btn>
+        <v-btn color="error" @click="logout" size="small">
+            <v-icon start>mdi-logout</v-icon>
+                Sair
+        </v-btn>
         </v-card-title>
       <v-data-table
         :headers="headers"
@@ -65,6 +69,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import EditUserModal from '@/components/userModal/EditUserModal.vue'
 import CreateUserModal from '@/components/userModal/CreateUserModal.vue'
+import { useRouter } from 'vue-router'
 
 interface User {
   id: number
@@ -134,6 +139,13 @@ const confirmDelete = async () => {
     dialog.value = false
     selectedUser.value = null
   }
+}
+
+const router = useRouter()
+
+const logout = () => {
+  localStorage.clear()
+  router.push('/login')
 }
 
 onMounted(() => {

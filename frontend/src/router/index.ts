@@ -5,6 +5,7 @@ import RolesPage from '@/views/RolesPage.vue'
 
 const routes = [
   { path: '/', component: LoginPage },
+  { path: '/login', component: LoginPage },
   { path: '/colaboradores', component: CollaboratorList },
   { path: '/cargos', name: 'Cargos', component: RolesPage }
 ]
