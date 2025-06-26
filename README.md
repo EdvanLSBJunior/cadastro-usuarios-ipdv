@@ -77,13 +77,13 @@ Isso irá:
 ## 📸 Imagens da Aplicação
 
 ### 🔐 Tela de Login
-"INSERIR AQUI A IMAGEM"
+![Login](./assets/login-screen.png)
 
 ### 👥 Listagem de Colaboradores
-"INSERIR AQUI A IMAGEM"
+![Colaboradores](./assets/collaborators-list.png)
 
 ### 🧑‍💼 Gerenciamento de Cargos
-"INSERIR AQUI A IMAGEM"
+![Editar Cargo](./assets/roles-list.png)
 
 ## ✅ Funcionalidades Implementadas
 
